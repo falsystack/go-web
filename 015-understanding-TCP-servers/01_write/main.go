@@ -7,6 +7,9 @@ import (
 	"net"
 )
 
+/*
+net packageを通してTCPサーバーを理解
+*/
 func main() {
 	// TCP Server
 	li, err := net.Listen("tcp", ":8080")
