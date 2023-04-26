@@ -6,3 +6,4 @@
 - HTTPはTCP上で動く
 - IETF(Internet Engineering Task Force)でHTTP標準を定義
   - 現状主にHTTP1.1を使われている
+
