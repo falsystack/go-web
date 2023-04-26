@@ -8,6 +8,7 @@ import (
 type Ramen string
 
 func (r Ramen) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	// writerを利用してresponse bodyに文字そのまま出力
 	fmt.Fprintf(w, "何でも入力してください。")
 }
 
