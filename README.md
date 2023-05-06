@@ -36,7 +36,7 @@ func ListenAndServeTLS(addr, certFile, keyFile string, handler Handler) error
 - go docの[request](https://pkg.go.dev/net/http#Request)
 ```go
 type Request struct {
-Method string
+Method string // http methods
 URL *url.URL
 //	Header = map[string][]string{
 //		"Accept-Encoding": {"gzip, deflate"},
