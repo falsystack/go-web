@@ -34,6 +34,27 @@ func ListenAndServeTLS(addr, certFile, keyFile string, handler Handler) error
 ```
 ### Request
 - go docの[request](https://pkg.go.dev/net/http#Request)
+```go
+type Request struct {
+Method string
+URL *url.URL
+//	Header = map[string][]string{
+//		"Accept-Encoding": {"gzip, deflate"},
+//		"Accept-Language": {"en-us"},
+//		"Foo": {"Bar", "two"},
+//	}
+Header Header
+Body io.ReadCloser
+ContentLength int64
+Host string
+// 先に`req.ParseForm()`を呼ぶ必要がある
+Form url.Values
+// 先に`req.ParseForm()`を呼ぶ必要がある
+PostForm url.Values
+}
+```
+- `req.Form`, `req.PostForm`を使用するためには先に`req.ParseForm()`を呼ぶ必要がある
+
 ### Response
 - go docの[response](https://pkg.go.dev/net/http#Response)
 ### ResponseWriter
