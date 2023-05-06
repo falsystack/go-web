@@ -57,5 +57,21 @@ PostForm url.Values
 
 ### Response
 - go docの[response](https://pkg.go.dev/net/http#Response)
+```go
+type ResponseWriter interface {
+    // HeaderはWriteHeaderで送るHeader Mapを返す。
+    Header() Header
+	
+    // Write は、HTTP 応答の一部としてコネクションにデータを書き込みます。
+	// WriteHeader がまだコールされていない場合は、Writeはデータを書き込む前に WriteHeader(http.StatusOK)を呼びます。
+    // ヘッダーに Content-Type 行が含まれていない場合、Write は自動的にContent-Typeを入れる
+    Write([]byte) (int, error)
+	
+	// WriteHeader は、ステータス コードを含む HTTP 応答ヘッダーを送信します。
+	// WriteHeader への明示的なコールは主にエラーコードを送る時に使用されます。
+    WriteHeader(int)
+}
+```
+
 ### ResponseWriter
 - https://pkg.go.dev/net/http#ResponseWriter
