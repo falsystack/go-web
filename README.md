@@ -27,6 +27,17 @@ http.ListenAndServe
 ```go
 func ListenAndServe(addr string, handler Handler) error
 ```
+- nilを入れるとDefaultServeMuxが使用される
+```go
+var c hotcat
+var d hotdog
+
+http.Handle("/cat", c)
+http.Handle("/dog", d)
+
+// nilを入れるとdefault serve muxが使用される。
+http.ListenAndServe(":8080", nil)
+```
 http.ListenAndServeTLS(https)
 - TLS（Transport Layer Security）は、SSLをもとに標準化させたもの
 ```go
@@ -75,3 +86,4 @@ type ResponseWriter interface {
 
 ### ResponseWriter
 - https://pkg.go.dev/net/http#ResponseWriter
+
