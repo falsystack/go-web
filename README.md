@@ -102,3 +102,37 @@ func dogPic(w http.ResponseWriter, req *http.Request) {
 	io.Copy(w, file)
 }
 ```
+
+## ServeContent
+```go
+func dogPic(w http.ResponseWriter, req *http.Request) {
+	file, err := os.Open("toby.jpg")
+	if err != nil {
+		http.Error(w, "file not found", 404)
+		return
+	}
+	defer file.Close()
+
+	info, err := file.Stat()
+	if err != nil {
+		http.Error(w, "file not found", 404)
+		return
+	}
+
+	http.ServeContent(w, req, file.Name(), info.ModTime(), file)
+}
+```
+
+## ServeFile
+cacheされたFileがある場合関数が呼ばれない
+```go
+func dogPic(w http.ResponseWriter, req *http.Request) {
+	fmt.Println("[dogPic] serving picture")
+	http.ServeFile(w, req, "toby.jpg")
+}
+```
+
+# http error返し方
+```go
+http.Error(w, "file not found", 404)
+```
