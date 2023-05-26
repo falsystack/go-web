@@ -87,3 +87,18 @@ type ResponseWriter interface {
 ### ResponseWriter
 - https://pkg.go.dev/net/http#ResponseWriter
 
+# Serve File
+`io.Copy`, `http.ServeContent`, `http.ServeFile`, `http.FileServer`がある。
+## io.Copy
+```go
+func dogPic(w http.ResponseWriter, req *http.Request) {
+	file, err := os.Open("toby.jpg")
+	if err != nil {
+		http.Error(w, "file not found", 404)
+		return
+	}
+	defer file.Close()
+
+	io.Copy(w, file)
+}
+```
