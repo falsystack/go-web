@@ -1,18 +1,18 @@
 # Go with net/http package
 - [net/http package](https://pkg.go.dev/net/http)
 - Go言語でWeb Serverを立てるための勉強
-- Go언어로 Web Server를 구축하기 위한 공부
 - net packageの配下にhttp packageがある。
+- Networkの深い理解が必要。
+- Request -> RFC7230（HTTP Protocol） -> HTTP Message  
 
 ## TCP Server
-- HTTPはTCP上で動く
 - IETF(Internet Engineering Task Force)でHTTP標準を定義
   - 現状主にHTTP1.1を使われている
 - ServerはMethod（HTTP Method）とラウターを通してどのコードを実行させるかを決める。
 - 主にHTTP1.1が使用されている: [RFC7230](https://www.rfc-editor.org/rfc/rfc7230#section-3.1.2) 
 
 ## What is Mux
-厳密には違うがmux, servemux, router, server, http mux等々同じ意味である。
+厳密には違うがmux, servemux, router, server, http mux, multiplexer(電気の経路を決めるのに使う装備)等々同じ意味である。
 
 ## net/http
 ### Handler interface
