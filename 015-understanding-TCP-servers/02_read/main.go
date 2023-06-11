@@ -9,19 +9,18 @@ import (
 
 func main() {
 	li, err := net.Listen("tcp", ":8080")
-	if hasErr(&err) {
-		log.Fatalln(err)
+	if hasErr(err) {
+		log.Println(err)
 	}
 	defer li.Close()
-
 	for {
 		conn, err := li.Accept()
-		if hasErr(&err) {
-			log.Fatalln(err)
+		if hasErr(err) {
+			log.Println(err)
 			continue
 		}
 		// go routineを利用
-		// request事 go routineを生成
+		// request毎 go routineを生成
 		go handle(conn)
 	}
 
@@ -31,13 +30,14 @@ func handle(conn net.Conn) {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		ln := scanner.Text()
+		fmt.Println("testtest")
 		fmt.Println(ln)
 	}
-	defer conn.Close()
 
-	fmt.Println("ここまでたどり着けない")
+	defer conn.Close()
+	fmt.Println("ここまでたどりつかない")
 }
 
-func hasErr(err *error) bool {
+func hasErr(err error) bool {
 	return err != nil
 }
