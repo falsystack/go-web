@@ -30,7 +30,6 @@ func handle(conn net.Conn) {
 	scanner := bufio.NewScanner(conn)
 	for scanner.Scan() {
 		ln := scanner.Text()
-		fmt.Println("testtest")
 		fmt.Println(ln)
 	}
 
