@@ -14,6 +14,31 @@
 ## What is Mux
 厳密には違うがmux, servemux, router, server, http mux, multiplexer(電気の経路を決めるのに使う装備)等々同じ意味である。
 
+## net
+netパッケージを用いてTCPサーバーを立てる
+`net.Listen`
+```go
+li, err := net.Listen("tcp", ":8080")
+conn, err := li.Accept()
+scanner := bufio.NewScanner(conn)
+for scanner.Scan() {
+    ln := scanner.Text()
+    fmt.Println(ln)
+}
+```
+
+`net.Dial`
+```go
+conn, err := net.Dial("tcp", "localhost:8080")
+bs, err := io.ReadAll(conn)
+fmt.Println(string(bs))
+```
+
+connectionのdead line設定方法
+```go
+err := conn.SetDeadline(time.Now().Add(10 * time.Second))
+```
+
 ## net/http
 ### Handler interface
 ```go
