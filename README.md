@@ -274,7 +274,34 @@ func dog(w http.ResponseWriter, req *http.Request) {
 }
 ```
 
-# http error返し方
+## index.html
+特別にindex.htmlがある場合index.htmlだけが提供される。
 ```go
-http.Error(w, "file not found", 404)
+// 現在のディレクトリを全部提供しているがそのディレクトリにindex.htmlがある場合
+// index.htmlだけが提供される。
+log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("."))))
+```
+
+# log.Fatal & http error
+## log.Fatal
+log出力してプログラムを終了させる。
+```go
+log.Fatal(http.ListenAndServe(":8080", http.FileServer(http.Dir("."))))
+```
+
+## http.Error
+- エラーは、指定されたエラー メッセージと HTTP コードでリクエストに応答します。 
+- それ以外の場合はリクエストは終了しません。 
+- 呼び出し元は、w への書き込みがそれ以上行われないようにする必要があります。 
+- エラー メッセージはプレーンテキストである必要があります。
+
+```go
+// http.StatusNotFound -> 404
+http.Error(w, "file not found", http.StatusNotFound)
+```
+
+## NotFoundHandler
+http.StatusNotFoundを返す単純なハンドラー
+```go
+http.Handle("/favicon.ico", http.NotFoundHandler())
 ```
