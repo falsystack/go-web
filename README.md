@@ -46,9 +46,10 @@ type Handler interface {
 	ServeHTTP(ResponseWriter, *Request)
 }
 ```
-- polymorphismによって`ServeHTTP(ResponseWriter, *Request)`を満足するメソッドならHandlerの役割を果たせる
+- polymorphismによって`ServeHTTP(http.ResponseWriter, *http.Request)`を具現するメソッドならHandlerの役割を果たせる
 ### Server
 http.ListenAndServe
+- ListenAndServe内部的に`net.Listen`が使われている
 ```go
 func ListenAndServe(addr string, handler Handler) error
 ```
@@ -68,7 +69,7 @@ http.ListenAndServeTLS(https)
 ```go
 func ListenAndServeTLS(addr, certFile, keyFile string, handler Handler) error
 ```
-### Request
+### *http.Request
 - go docの[request](https://pkg.go.dev/net/http#Request)
 ```go
 type Request struct {
@@ -89,7 +90,8 @@ Form url.Values
 PostForm url.Values
 }
 ```
-- `req.Form`, `req.PostForm`を使用するためには先に`req.ParseForm()`を呼ぶ必要がある
+- `req.Form`, `req.PostForm`を使用するためには先に`req.ParseForm()`を呼ぶ必要がある, `req.ParseForm()`を呼ぶと`req.Form`を更新してくれる
+- `req.Form` : mapタイプ
 
 ### Response
 - go docの[response](https://pkg.go.dev/net/http#Response)
@@ -112,9 +114,98 @@ type ResponseWriter interface {
 ### ResponseWriter
 - https://pkg.go.dev/net/http#ResponseWriter
 
+### ServeMux
+**基本使用方法**
+
+```go
+type hotdog, hotcat int
+
+func (d hotdog) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+    io.WriteString(res, "dog dog dog")
+}
+
+func (c hotcat) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+    io.WriteString(res, "cat cat cat")
+}
+
+func main() {
+  mux := http.NewServeMux()
+  mux.Handle("/cat", c)
+  mux.Handle("/dog/", d)
+  
+  http.ListenAndServe(":8080", mux)
+}
+```
+**DefaultServeMuxの使用**
+- ListenAndServeにnilを渡すとDefaultServeMuxが使用される。
+```go
+type hotdog, hotcat int
+
+func (d hotdog) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "dog dog dog")
+}
+
+func (c hotcat) ServeHTTP(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "cat cat cat")
+}
+
+func main() {
+	var c hotcat
+	var d hotdog
+
+	http.Handle("/cat", c)
+	http.Handle("/dog", d)
+
+	// nilを入れるとdefault serve muxが使用される。
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+**HandleFuncの使用**
+```go
+// ServeHTTPではない
+func d(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "dog dog dog")
+}
+
+func c(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "cat cat cat")
+}
+
+func main() {
+	http.HandleFunc("/dog", d)
+	http.HandleFunc("/cat", c)
+
+	// use default serve mux
+	http.ListenAndServe(":8080", nil)
+}
+```
+
+**HandlerFuncの使用**
+一番多く使われる。
+```go
+func d(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "dog dog dog")
+}
+
+func c(res http.ResponseWriter, req *http.Request) {
+	io.WriteString(res, "cat cat cat")
+}
+
+func main() {
+    // handleを使用している
+	// http.HandlerFunc()でタイプをconversionしている
+	http.Handle("/cat", http.HandlerFunc(c)) 
+	http.Handle("/dog", http.HandlerFunc(d))
+
+	http.ListenAndServe(":8080", nil)
+}
+```
+
 # Serve File
 `io.Copy`, `http.ServeContent`, `http.ServeFile`, `http.FileServer`がある。
 ## io.Copy
+単一ファイルを提供
 ```go
 func dogPic(w http.ResponseWriter, req *http.Request) {
 	file, err := os.Open("toby.jpg")
@@ -129,6 +220,7 @@ func dogPic(w http.ResponseWriter, req *http.Request) {
 ```
 
 ## ServeContent
+単一ファイルを提供
 ```go
 func dogPic(w http.ResponseWriter, req *http.Request) {
 	file, err := os.Open("toby.jpg")
@@ -149,11 +241,36 @@ func dogPic(w http.ResponseWriter, req *http.Request) {
 ```
 
 ## ServeFile
+単一ファイルを提供
 cacheされたFileがある場合関数が呼ばれない
 ```go
 func dogPic(w http.ResponseWriter, req *http.Request) {
 	fmt.Println("[dogPic] serving picture")
 	http.ServeFile(w, req, "toby.jpg")
+}
+```
+
+## FileServer
+- directoryを指定して提供できる。
+- FileServerはHnadlerを返す。
+
+```go
+http.Handle("/", http.FileServer(http.Dir(".")))
+```
+
+## StripPrefix
+StripPrefixはHandlerを返す。
+```go
+func main() {
+	http.HandleFunc("/", dog)
+	http.Handle("/resources/", http.StripPrefix("/resources", http.FileServer(http.Dir("./assets"))))
+	http.ListenAndServe(":8080", nil)
+}
+
+func dog(w http.ResponseWriter, req *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	// 指定されたprefixを除去して残りを元にファイルを探す, /resources/toby.jpg -> toby.jpg 
+	io.WriteString(w, `<img src="/resources/toby.jpg">`)
 }
 ```
 
