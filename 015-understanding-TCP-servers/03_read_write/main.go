@@ -7,6 +7,14 @@ import (
 	"net"
 )
 
+/*
+# on terminal
+telnet localhost 8080
+
+# telnet 終了方法
+^] -> quit
+*/
+
 func main() {
 	li, err := net.Listen("tcp", ":8080")
 	if hasErr(err) {
@@ -17,7 +25,7 @@ func main() {
 	for {
 		conn, err := li.Accept()
 		if hasErr(err) {
-			log.Fatalln(err)
+			log.Println(err)
 			continue
 		}
 		go handle(conn)
