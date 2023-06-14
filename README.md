@@ -421,3 +421,22 @@ bs := make([]byte, req.ContentLength)
 req.Body.Read(bs)
 body := string(bs)
 ```
+## Redirect
+RFC7231で確認しよう
+- 301 Move Permanently
+- 302 使わない方がいい
+- 303 See Other : 常に GET を使用
+- 307 Temporary Redirect, Request Methodが保持される。
+### http.Redirect()
+```go
+// post -> get, 常に GET を使用
+http.Redirect(w, req, "/", http.StatusSeeOther)
+
+// post -> post, Request Methodが保持される。
+http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
+```
+### ヘッダーに直書き
+```go
+w.Header().Set("Location", "/")
+w.WriteHeader(http.StatusSeeOther)
+```
