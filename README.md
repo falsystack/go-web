@@ -356,6 +356,8 @@ func foo(w http.ResponseWriter, req *http.Request) {
 fileもfile headerとbodyが存在する
 - `req.FormFile(key string)`でファイルをOpen
 - `io.ReadAll(file)`でファイルを読む(Read)
+
+**Open & Read**
 ```go
 // open
 file, header, err := req.FormFile("q")
@@ -374,4 +376,40 @@ if err != nil {
     return
 }
 s = string(bs)
+```
+
+**Write file on Server**
+```go
+// open
+file, header, err := req.FormFile("q")
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+defer file.Close()
+
+log.Println("\n file: ", file, "\n header: ", header, "\n err: ", err)
+
+// read
+bs, err := io.ReadAll(file)
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+s = string(bs)
+
+// serverに保存
+// create file
+dst, err := os.Create(filepath.Join("./user/", header.Filename))
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+defer dst.Close()
+
+n, err := dst.Write(bs)
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
 ```
