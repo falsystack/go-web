@@ -440,3 +440,43 @@ http.Redirect(w, req, "/", http.StatusTemporaryRedirect)
 w.Header().Set("Location", "/")
 w.WriteHeader(http.StatusSeeOther)
 ```
+
+## Cookie
+Cookieはサーバがクライアントのコンピュータに書き込めるデータを保存できる小さなファイルである。
+
+### Set Cookie
+```go
+http.SetCookie(w, &http.Cookie{
+		Name:  "my-cookie",
+		Value: "choco pie",
+		Path:  "/",
+	})
+```
+
+### Get Cookie
+```go
+cookie, err := req.Cookie("my-cookie")
+```
+探しているcookieがない場合http.ErrNoCookieが返ってくる。
+```go
+cookie, err := req.Cookie("counter-cookie")
+	if err == http.ErrNoCookie {
+		cookie = &http.Cookie{
+			Name:  "counter-cookie",
+			Value: "0",
+		}
+	}
+```
+
+### Remove Cookie
+MaxAgeを0又は-1にする。
+```go
+cookie, err := req.Cookie("my-cookie")
+if err == http.ErrNoCookie {
+    http.Redirect(w, req, "/set", http.StatusSeeOther)
+    return
+}
+cookie.MaxAge = -1 // delete cookie
+http.SetCookie(w, cookie)
+http.Redirect(w, req, "/", http.StatusSeeOther)
+```
