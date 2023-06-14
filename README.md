@@ -303,5 +303,52 @@ http.Error(w, "file not found", http.StatusNotFound)
 ## NotFoundHandler
 http.StatusNotFoundを返す単純なハンドラー
 ```go
+// chromeだとfaviconを要求する、firefoxはしない
 http.Handle("/favicon.ico", http.NotFoundHandler())
+```
+
+## Passing Data
+get -> url
+post -> body
+### Query parameter
+`req.FormValue(ket string) string`は
+- キーが存在しない場合空文字列を返す。
+- URLのクエリパラメタよりHTML FormのPOST / PUTのBodyパラメタが優先される。
+- 同じキーに複数の値を持つ場合、ParseFormを呼び出し後Request.Formを調べる。
+```go
+func foo(w http.ResponseWriter, req *http.Request) {
+	query := req.FormValue("q")
+	fmt.Fprintln(w, "Do my Search: "+query)
+}
+
+
+func foo(w http.ResponseWriter, req *http.Request) {
+    if err := req.ParseForm(); err != nil {
+        log.Println(err)
+    }
+    
+    // 同じキーに値が複数ある場合
+    form := req.Form // map[string][]string
+    values := form["q"]
+    fmt.Println(values[0], values[1])
+}
+
+```
+
+### Form
+form valueも`FormValue()`関数一つで取れる、JavaのSpringと一緒でURL側とForm側両方一つで取れる
+- urlもbodyもkey=value形式だから当然だけど、なぜかnodejsは違った記憶がある。
+
+```go
+func foo(w http.ResponseWriter, req *http.Request) {
+	query := req.FormValue("q")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	io.WriteString(w, `
+		<form method="get">
+			<input type="text" name="q">
+			<input type="submit" value="send">
+		</form>
+		<br>
+	`+query)
+}
 ```
