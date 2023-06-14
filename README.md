@@ -413,3 +413,11 @@ if err != nil {
     return
 }
 ```
+
+**req.Body.Read()**
+request bodyを読み取りbyte sliceに入れる
+```go
+bs := make([]byte, req.ContentLength)
+req.Body.Read(bs)
+body := string(bs)
+```
