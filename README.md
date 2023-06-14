@@ -354,3 +354,24 @@ func foo(w http.ResponseWriter, req *http.Request) {
 ```
 ### Upload
 fileもfile headerとbodyが存在する
+- `req.FormFile(key string)`でファイルをOpen
+- `io.ReadAll(file)`でファイルを読む(Read)
+```go
+// open
+file, header, err := req.FormFile("q")
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+defer file.Close()
+
+log.Println("\n file: ", file, "\n header: ", header, "\n err: ", err)
+
+// read
+bs, err := io.ReadAll(file)
+if err != nil {
+    http.Error(w, err.Error(), http.StatusInternalServerError)
+    return
+}
+s = string(bs)
+```
