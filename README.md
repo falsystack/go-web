@@ -352,3 +352,5 @@ func foo(w http.ResponseWriter, req *http.Request) {
 	`+query)
 }
 ```
+### Upload
+fileもfile headerとbodyが存在する
