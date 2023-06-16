@@ -487,7 +487,13 @@ http.Redirect(w, req, "/", http.StatusSeeOther)
 
 # 暗号化
 bcrypt パッケージを使う
-```go
-golang.org/x/crypto/bcrypt
+```shell
+go get golang.org/x/crypto/bcrypt
 ```
+## 簡単な使い方
+```go
+// 暗号化
+bs, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
+```
+
 
