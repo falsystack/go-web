@@ -40,7 +40,7 @@ func bar(w http.ResponseWriter, req *http.Request) {
 	if !ok {
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 	}
-	
+
 	u := dbUsers[sid]
 	tpl.ExecuteTemplate(w, "bar.gohtml", u)
 }
