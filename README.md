@@ -484,3 +484,10 @@ http.Redirect(w, req, "/", http.StatusSeeOther)
 ```
 
 # Session
+
+# 暗号化
+bcrypt パッケージを使う
+```go
+golang.org/x/crypto/bcrypt
+```
+
