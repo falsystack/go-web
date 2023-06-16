@@ -449,6 +449,8 @@ Cookieはサーバがクライアントのコンピュータに書き込める�
 http.SetCookie(w, &http.Cookie{
 		Name:  "my-cookie",
 		Value: "choco pie",
+		Secure : true, // httpsのみ送る
+		HttpOnly : true, // javascriptでアクセス出来ない
 		Path:  "/",
 	})
 ```
