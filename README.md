@@ -482,3 +482,5 @@ cookie.MaxAge = -1 // delete cookie
 http.SetCookie(w, cookie)
 http.Redirect(w, req, "/", http.StatusSeeOther)
 ```
+
+# Session
