@@ -483,6 +483,14 @@ http.SetCookie(w, cookie)
 http.Redirect(w, req, "/", http.StatusSeeOther)
 ```
 
+```go
+cookie = &http.Cookie{
+    Name:   "session",
+    Value:  "",
+    MaxAge: -1, // 0未満の場合破棄される。
+}
+```
+
 # Session
 
 # 暗号化
