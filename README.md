@@ -494,6 +494,12 @@ go get golang.org/x/crypto/bcrypt
 ```go
 // 暗号化
 bs, err := bcrypt.GenerateFromPassword([]byte(pwd), bcrypt.MinCost)
+
+// 比較
+if err := bcrypt.CompareHashAndPassword(u.Password, []byte(pwd)); err != nil {
+    http.Error(w, "パスワードが一致しません。。", http.StatusForbidden)
+    return
+}
 ```
 
 
