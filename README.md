@@ -492,6 +492,10 @@ cookie = &http.Cookie{
 ```
 
 # Session
+## Expire Session
+- Client -> MaxAge
+- Server -> Control length of session on the server
+
 
 # 暗号化
 bcrypt パッケージを使う
@@ -510,6 +514,27 @@ if err := bcrypt.CompareHashAndPassword(u.Password, []byte(pwd)); err != nil {
 }
 ```
 
-# Permission
+# SQL
+mysql driverが必要
+```go
+go get github.com/go-sql-driver/mysql
+```
+import
+```go
+_ "github.com/go-sql-driver/mysql"
+```
+
+```go
+db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/intro?charset=utf8")
+if err != nil {
+    log.Println(err)
+}
+defer db.Close()
+
+// 連結確認
+if err = db.Ping(); err != nil {
+    log.Println(err)
+}
+```
 
 
