@@ -510,4 +510,6 @@ if err := bcrypt.CompareHashAndPassword(u.Password, []byte(pwd)); err != nil {
 }
 ```
 
+# Permission
+
 
