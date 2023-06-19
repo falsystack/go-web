@@ -49,11 +49,13 @@ func index(w http.ResponseWriter, req *http.Request) {
 		defer mf.Close()
 
 		ext := strings.Split(fh.Filename, ".")[1]
+
 		// create sha1
 		hash := sha1.New()
 		io.Copy(hash, mf)
 		fname := fmt.Sprintf("%x", hash.Sum(nil)) + "." + ext
 		log.Println(fname, "file name")
+
 		// create new file
 		wd, err := os.Getwd()
 		if err != nil {
