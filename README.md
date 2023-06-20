@@ -443,6 +443,8 @@ w.WriteHeader(http.StatusSeeOther)
 
 ## Cookie
 Cookieはサーバがクライアントのコンピュータに書き込めるデータを保存できる小さなファイルである。
+- ASCIIではない文字は禁止されている
+- base64エンコードで変換するのが良い。([]byte -> ascii)
 
 ### Set Cookie
 ```go
